@@ -25,6 +25,6 @@ Two methods were implemented
 model1 = backward_adj_r2(dtframe = mtcars,response = "mpg", exclude = c("wt"))
 summary(model1)
 
-model2 = forward_p_value(dtframe = mtcars,response = "mpg", exclude = c("wt"))
+model2 = forward_p_value(dtframe = mtcars,response = "mpg", exclude = c("wt"), alpha=0.05)
 summary(model2)
 ```
