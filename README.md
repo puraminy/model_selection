@@ -15,6 +15,6 @@ Two methods were implemented
 # Backwards Elimination - Adjusted R-squared
 
  - Start with the full model
- - Drop one variable at a time and record adjusted $R^2$ of each smaller model
- - Pick the model with the highest increase in adjusted $R^2$
- - Repeat until none of the models yield an increase in adjusted $R^2$
+ - Drop one variable at a time and record adjusted R2 of each smaller model
+ - Pick the model with the highest increase in adjusted R2
+ - Repeat until none of the models yield an increase in adjusted R2
