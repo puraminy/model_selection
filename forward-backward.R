@@ -10,7 +10,7 @@ forward_p_value = function(dtframe, response, exclude, alpha=0.05)
   while (min_val < alpha)
   {
     min_val = 100
-    min_col = ""
+    selected_col = ""
     for (col in cols)
     {
       if (!(col %in% exclude))
@@ -31,18 +31,22 @@ forward_p_value = function(dtframe, response, exclude, alpha=0.05)
         if (p_val < min_val)
         {
           min_val = p_val
-          min_col = col
+          selected_col = col
         }
         #print(s$coefficients)
         cat(format(paste("+",col), width = 15), " Adj. R2:", format(adj_r2,width = 15, justify = 'right'),"t-value:", ... = format(s$coefficients[2,2],width = 15, nsmall = 3, digits = 3), " p-value:", p_val, "\n")
       }
     }
-    cat("\n==> +",min_col, ": p_vlaue:", min_val, "\n\n")
     if (min_val  < alpha)
     {
-      sel_cols = if (sel_cols != "") paste(sel_cols, " + ", min_col) else min_col
+      cat("\n==> Adding ",selected_col, ": p_vlaue:", min_val, "\n\n")
+      sel_cols = if (sel_cols != "") paste(sel_cols, " + ", selected_col) else selected_col
     }
-    exclude = c(exclude, min_col)
+    else
+    {
+       cat("\n==> No column to add (based on the significant level of", alpha, ")\n")
+    }
+    exclude = c(exclude, selected_col)
   }
   formula = paste(response, " ~ ", sel_cols)
   model = lm(formula = formula, data = dtframe)
@@ -68,7 +72,7 @@ backward_adj_r2 = function(dtframe, response, exclude)
   model = NULL
   while (max_adj_r2 > old_adj_r2)
   {
-    min_col = ""
+    selected_col = ""
     old_adj_r2 = max_adj_r2
     for (col in all_cols)
     {
@@ -83,20 +87,18 @@ backward_adj_r2 = function(dtframe, response, exclude)
         if (adj_r2 > max_adj_r2)
         {
           max_adj_r2 = adj_r2
-          min_col = col
+          selected_col = col
         }
         #print(s$coefficients)
         col = if(col=="") "NONE" else col
         cat(format(paste("-",col), width = 15), " Adj. R2:", format(adj_r2,width = 15, justify = 'right'),"\n")
       }
     }
-    min_col = if(min_col=="") "NONE" else min_col
-    cat("\n==> -",min_col,": Adj R2:",max_adj_r2, "\n\n")
-    col_list = setdiff(col_list, min_col)
-    exclude = c(exclude, min_col)
+    selected_col = if(selected_col=="") "NONE" else selected_col
+    cat("\n==> Removing ",selected_col,": Adj R2:",max_adj_r2, "\n\n")
+    col_list = setdiff(col_list, selected_col)
+    exclude = c(exclude, selected_col)
   }
-  # print("Backward (Adj R2) Selected features:")
-  # cat(col_list, sep = ", ") 
   return(model)
 }
 
