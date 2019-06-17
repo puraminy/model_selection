@@ -1,7 +1,9 @@
 
 forward_p_value = function(dtframe, response, exclude, alpha=0.05)
 {
-  cols = names(hs.sample)
+  # Specify the columns that you want to exclude from your model
+  exclude = c(exclude, response)
+  cols = names(dtframe)
   min_val = 0
   sel_cols = ""
   model = NULL
@@ -49,6 +51,8 @@ forward_p_value = function(dtframe, response, exclude, alpha=0.05)
 
 backward_adj_r2 = function(dtframe, response, exclude)
 {
+  # Specify the columns that you want to exclude from your model
+  exclude = c(exclude, response)
   cols = names(dtframe)
   col_list = c()
   for (col in cols)
@@ -96,15 +100,3 @@ backward_adj_r2 = function(dtframe, response, exclude)
   return(model)
 }
 
-setwd('C:\\Users\\NP\\Desktop\\si\\Project')
-hs <-read.csv('House Sales.csv', stringsAsFactors = F)
-hs$waterfront = ifelse(hs$waterfront > 0, yes="yes", no="no")
-hs$waterfront = as.factor(hs$waterfront)
-
-hs$view = as.factor(hs$view)
-hs.sample = sample_n(hs, 1000)
-
-exclude = c("id", "date", "price", "general_grade", "general_view", "general_cond")
-
-model = backward_adj_r2(dtframe = hs.sample,response = "price", exclude = exclude)
-summary(model)
