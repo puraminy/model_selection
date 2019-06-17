@@ -18,3 +18,13 @@ Two methods were implemented
  - Drop one variable at a time and record adjusted R2 of each smaller model
  - Pick the model with the highest increase in adjusted R2
  - Repeat until none of the models yield an increase in adjusted R2
+
+# How to use
+
+```r
+model1 = backward_adj_r2(dtframe = mtcars,response = "mpg", exclude = c("wt"))
+summary(model1)
+
+model2 = forward_p_value(dtframe = mtcars,response = "mpg", exclude = c("wt"))
+summary(model2)
+```
