@@ -26,7 +26,17 @@ forward_p_value = function(dtframe, response, exclude, alpha=0.05)
           if (length(levels) > 1)
             col2retrive =paste(col,levels[2],sep = "")
         }
-        p_val = s$coefficients[col2retrive,4]
+        if (!is.na(model$coefficients[col2retrive]))
+        {
+          p_val = s$coefficients[col2retrive,4]
+          t_value = s$coefficients[col2retrive,2]
+        }
+        else
+        {
+          p_val = 100
+          t_value = 100
+          cat("\nWarning:There is a strong colinearity between ", col, " and other feature. Try to remove it from dataset.\n\n")
+        }
         adj_r2 = s$adj.r.squared
         if (p_val < min_val)
         {
@@ -34,7 +44,8 @@ forward_p_value = function(dtframe, response, exclude, alpha=0.05)
           selected_col = col
         }
         #print(s$coefficients)
-        cat(format(paste("+",col), width = 15), " Adj. R2:", format(adj_r2,width = 15, justify = 'right'),"t-value:", ... = format(s$coefficients[2,2],width = 15, nsmall = 3, digits = 3), " p-value:", p_val, "\n")
+        if (p_val != 100)
+          cat(format(paste("+",col), width = 15), " Adj. R2:", format(adj_r2,width = 15, justify = 'right'),"t-value:", format(t_value,width = 15, nsmall = 3, digits = 3), " p-value:", p_val, "\n")
       }
     }
     if (min_val  < alpha)
